@@ -4,7 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="eData - Template-based Web Scraper"
+        Title="AzData V1 - Template-based Web Scraper"
+        Icon="/icon.png"
         Height="820"
         Width="1280"
         MinHeight="680"
@@ -21,15 +22,16 @@
 
         <!-- Header -->
         <DockPanel Grid.Row="0" Margin="0,0,0,16">
-            <StackPanel DockPanel.Dock="Left">
-                <TextBlock FontSize="28" FontWeight="Bold">
+            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
+                <Image Source="/icon.png" Width="36" Height="36" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                <TextBlock FontSize="28" FontWeight="Bold" VerticalAlignment="Center">
                     <TextBlock.Foreground>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
                             <GradientStop Color="#4F46E5" Offset="0.0" />
                             <GradientStop Color="#9333EA" Offset="1.0" />
                         </LinearGradientBrush>
                     </TextBlock.Foreground>
-                    eData
+                    AzData V1
                 </TextBlock>
             </StackPanel>
         </DockPanel>

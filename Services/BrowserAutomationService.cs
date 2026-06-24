@@ -19,7 +19,7 @@ public record ElementPickResult(string CssSelector, string XPath, string SampleV
 public class BrowserAutomationService : IAsyncDisposable
 {
     private const int MaxListPages = 500;
-    private static readonly TimeSpan DelayBetweenCompanies = TimeSpan.FromSeconds(4);
+    private static readonly TimeSpan DelayBetweenCompanies = TimeSpan.FromSeconds(5);
     private IPlaywright? _playwright;
     private IBrowser? _browser;
     private IBrowserContext? _context;
@@ -1430,10 +1430,10 @@ public class BrowserAutomationService : IAsyncDisposable
             if (Regex.IsMatch(value, @"\d")) return false; // Người đại diện không được chứa chữ số
             var words = value.Split(' ', StringSplitOptions.RemoveEmptyEntries);
             if (words.Length < 2 || words.Length > 8) return false; // Tên thường từ 2 đến 8 từ
-            
+
             var addressKeywords = new[] { "đường", "phường", "quận", "thành phố", "tỉnh", "huyện", "xã", "số", "ấp", "thôn", "lầu", "tầng", "tòa nhà", "trụ sở" };
             if (addressKeywords.Any(x => value.Contains(x, StringComparison.OrdinalIgnoreCase))) return false; // Không chứa từ địa chỉ
-            
+
             return true;
         }
 
