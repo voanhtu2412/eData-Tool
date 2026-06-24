@@ -1266,20 +1266,41 @@ public class BrowserAutomationService : IAsyncDisposable
                         }
                     }
 
-                    const allElements = document.querySelectorAll("td, th, span, label, p, div, li, h3, h4, b, strong");
+                    const allElements = document.querySelectorAll("td, th, span, label, p, div, li, h3, h4, b, strong, input, a");
                     for (const el of allElements) {
+                        // 1. Kiểm tra thuộc tính Accessibility & Attributes (aria-label, title, placeholder, name, id)
+                        const attributesToCheck = ["aria-label", "title", "placeholder", "name", "id"];
+                        let matchesByAttr = false;
+                        for (const attr of attributesToCheck) {
+                            const val = el.getAttribute(attr);
+                            if (val) {
+                                const cleanVal = val.toLowerCase().replace(/[:：_-\s]+/g, " ").trim();
+                                if (targetLabels.some(target => cleanVal === target || cleanVal.includes(target))) {
+                                    matchesByAttr = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        // 2. Kiểm tra văn bản hiển thị (Visible text)
                         const text = (el.innerText || el.textContent || "").trim();
-                        if (!text || text.length > 100) continue;
+                        let matchesByText = false;
+                        if (text && text.length <= 100) {
+                            const cleanText = text.toLowerCase().replace(/[:：]/g, "").trim();
+                            matchesByText = targetLabels.some(target => 
+                                cleanText === target || 
+                                (cleanText.startsWith(target) && cleanText.length < target.length + 5)
+                            );
+                        }
 
-                        const cleanText = text.toLowerCase().replace(/[:：]/g, "").trim();
-                        const matches = targetLabels.some(target => 
-                            cleanText === target || 
-                            (cleanText.startsWith(target) && cleanText.length < target.length + 5)
-                        );
+                        if (matchesByAttr || matchesByText) {
+                            // Nếu là thẻ input, lấy trực tiếp value
+                            if (el.tagName === "INPUT") {
+                                return el.value || "";
+                            }
 
-                        if (matches) {
                             // TH1: Dữ liệu nằm chung dòng có dấu hai chấm (vd: "Mã số thuế: 0123456789")
-                            if (text.includes(":") || text.includes("：")) {
+                            if (text && (text.includes(":") || text.includes("："))) {
                                 const parts = text.split(/[:：]/);
                                 if (parts.length > 1) {
                                     const val = parts.slice(1).join(":").trim();
@@ -1320,6 +1341,11 @@ public class BrowserAutomationService : IAsyncDisposable
                                     if (val) return val;
                                     parentNext = parentNext.nextElementSibling;
                                 }
+                            }
+
+                            // Khớp theo thuộc tính nhưng không có sibling (ví dụ: <div aria-label="Mã số thuế">0123456789</div>)
+                            if (matchesByAttr && text && !matchesByText) {
+                                return text;
                             }
                         }
                     }
