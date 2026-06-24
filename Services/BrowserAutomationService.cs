@@ -1,10 +1,9 @@
 using Microsoft.Playwright;
+using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using System.Windows;
-using System.Diagnostics;
-using System.IO;
 using TaxCodeCollector.Models;
 
 namespace TaxCodeCollector.Services;
@@ -20,7 +19,7 @@ public record ElementPickResult(string CssSelector, string XPath, string SampleV
 public class BrowserAutomationService : IAsyncDisposable
 {
     private const int MaxListPages = 500;
-    private static readonly TimeSpan DelayBetweenCompanies = TimeSpan.FromSeconds(5);
+    private static readonly TimeSpan DelayBetweenCompanies = TimeSpan.FromSeconds(4);
     private IPlaywright? _playwright;
     private IBrowser? _browser;
     private IBrowserContext? _context;
