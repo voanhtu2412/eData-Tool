@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="TUHU V1 - Template-based Web Scraper"
+        Title="THub - Template-based Web Scraper"
         Icon="/icon.png"
         Height="820"
         Width="1280"
@@ -23,16 +23,7 @@
         <!-- Header -->
         <DockPanel Grid.Row="0" Margin="0,0,0,16">
             <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
-                <Image Source="/icon.png" Width="36" Height="36" Margin="0,0,12,0" VerticalAlignment="Center"/>
-                <TextBlock FontSize="28" FontWeight="Bold" VerticalAlignment="Center">
-                    <TextBlock.Foreground>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                            <GradientStop Color="{StaticResource PinkHoverColor}" Offset="0.0" />
-                            <GradientStop Color="{StaticResource PinkPrimaryColor}" Offset="1.0" />
-                        </LinearGradientBrush>
-                    </TextBlock.Foreground>
-                    TUHU V1
-                </TextBlock>
+                <Image Source="/logo.png" Height="40" Margin="0,0,12,0" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
             </StackPanel>
         </DockPanel>
 
