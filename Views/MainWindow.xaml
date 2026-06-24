@@ -82,16 +82,10 @@
                                                 Width="44" />
                             <DataGridTextColumn Header="FieldName"
                                                 Binding="{Binding FieldName, UpdateSourceTrigger=PropertyChanged}"
-                                                Width="110" />
-                            <DataGridTextColumn Header="CssSelector"
-                                                Binding="{Binding CssSelector, UpdateSourceTrigger=PropertyChanged}"
-                                                Width="140" />
-                            <DataGridTextColumn Header="XPath"
-                                                Binding="{Binding XPath, UpdateSourceTrigger=PropertyChanged}"
-                                                Width="140" />
+                                                Width="*" />
                             <DataGridTextColumn Header="SampleValue"
                                                 Binding="{Binding SampleValue, UpdateSourceTrigger=PropertyChanged}"
-                                                Width="120" />
+                                                Width="220" />
                         </DataGrid.Columns>
                     </DataGrid>
 
