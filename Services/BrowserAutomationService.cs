@@ -1329,7 +1329,11 @@ public class BrowserAutomationService : IAsyncDisposable
 
             if (!string.IsNullOrWhiteSpace(smartValue))
             {
-                return CleanText(smartValue);
+                var cleaned = CleanText(smartValue);
+                if (IsValidForFieldType(template.FieldName, cleaned))
+                {
+                    return cleaned;
+                }
             }
         }
         catch
@@ -1343,7 +1347,11 @@ public class BrowserAutomationService : IAsyncDisposable
             var value = await TryExtractByLocatorAsync(template.CssSelector, false);
             if (!string.IsNullOrWhiteSpace(value))
             {
-                return CleanText(value);
+                var cleaned = CleanText(value);
+                if (IsValidForFieldType(template.FieldName, cleaned))
+                {
+                    return cleaned;
+                }
             }
         }
 
@@ -1352,11 +1360,65 @@ public class BrowserAutomationService : IAsyncDisposable
             var value = await TryExtractByLocatorAsync(template.XPath, true);
             if (!string.IsNullOrWhiteSpace(value))
             {
-                return CleanText(value);
+                var cleaned = CleanText(value);
+                if (IsValidForFieldType(template.FieldName, cleaned))
+                {
+                    return cleaned;
+                }
             }
         }
 
         return string.Empty;
+    }
+
+    private static bool IsValidForFieldType(string fieldName, string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return false;
+        }
+
+        var cleanField = fieldName.ToLower().Trim();
+
+        // 1. Kiểm tra Mã số thuế (MST)
+        if (cleanField.Contains("mst") || cleanField.Contains("thuế") || cleanField.Contains("thue"))
+        {
+            var digits = Regex.Replace(value, @"[^\d]", "");
+            return digits.Length == 10 || digits.Length == 13;
+        }
+
+        // 2. Kiểm tra Số điện thoại (SĐT)
+        if (cleanField.Contains("sđt") || cleanField.Contains("sdt") || cleanField.Contains("thoại") || cleanField.Contains("thoaichinh") || cleanField.Contains("phone") || cleanField.Contains("tel"))
+        {
+            var clean = Regex.Replace(value, @"[^\d\+]", "");
+            if (clean.StartsWith("+"))
+            {
+                clean = clean.Substring(1);
+            }
+            return clean.Length >= 8 && clean.Length <= 12 && Regex.IsMatch(clean, @"^\d+$");
+        }
+
+        // 3. Kiểm tra Người đại diện
+        if (cleanField.Contains("đại diện") || cleanField.Contains("dai dien") || cleanField.Contains("chủ") || cleanField.Contains("chu") || cleanField.Contains("giám đốc") || cleanField.Contains("giam doc"))
+        {
+            if (Regex.IsMatch(value, @"\d")) return false; // Người đại diện không được chứa chữ số
+            var words = value.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            if (words.Length < 2 || words.Length > 8) return false; // Tên thường từ 2 đến 8 từ
+            
+            var addressKeywords = new[] { "đường", "phường", "quận", "thành phố", "tỉnh", "huyện", "xã", "số", "ấp", "thôn", "lầu", "tầng", "tòa nhà", "trụ sở" };
+            if (addressKeywords.Any(x => value.Contains(x, StringComparison.OrdinalIgnoreCase))) return false; // Không chứa từ địa chỉ
+            
+            return true;
+        }
+
+        // 4. Kiểm tra Địa chỉ
+        if (cleanField.Contains("địa chỉ") || cleanField.Contains("dia chi") || cleanField.Contains("trụ sở") || cleanField.Contains("tru so"))
+        {
+            if (Regex.IsMatch(value, @"^\d+$")) return false; // Không thể là toàn số
+            return value.Length >= 10; // Địa chỉ thường phải dài từ 10 ký tự trở lên
+        }
+
+        return true; // Các trường khác mặc định hợp lệ
     }
 
     private async Task<string> TryExtractByLocatorAsync(string selector, bool isXPath)
