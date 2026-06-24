@@ -10,7 +10,7 @@
         Width="1280"
         MinHeight="680"
         MinWidth="1060"
-        Background="#F1F5F9">
+        Background="{StaticResource PinkLightestBrush}">
 
     <!-- All resources are defined globally in Theme.xaml -->
 
@@ -27,8 +27,8 @@
                 <TextBlock FontSize="28" FontWeight="Bold" VerticalAlignment="Center">
                     <TextBlock.Foreground>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                            <GradientStop Color="#4F46E5" Offset="0.0" />
-                            <GradientStop Color="#9333EA" Offset="1.0" />
+                            <GradientStop Color="{StaticResource PinkHoverColor}" Offset="0.0" />
+                            <GradientStop Color="{StaticResource PinkPrimaryColor}" Offset="1.0" />
                         </LinearGradientBrush>
                     </TextBlock.Foreground>
                     AzData V1
@@ -47,7 +47,7 @@
             <!-- Left Panel: Template Fields -->
             <Border Grid.Column="0"
                     Background="#FFFFFF"
-                    BorderBrush="#E2E8F0"
+                    BorderBrush="{StaticResource PinkLightBrush}"
                     BorderThickness="1"
                     CornerRadius="8"
                     Padding="16">
@@ -155,7 +155,7 @@
             <!-- Right Panel: Scraper Settings & Results -->
             <Border Grid.Column="2"
                     Background="#FFFFFF"
-                    BorderBrush="#E2E8F0"
+                    BorderBrush="{StaticResource PinkLightBrush}"
                     BorderThickness="1"
                     CornerRadius="8"
                     Padding="16">

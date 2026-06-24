@@ -5,10 +5,10 @@
         Height="410"
         Width="620"
         WindowStartupLocation="CenterOwner"
-        Background="#F1F5F9">
+        Background="{StaticResource PinkLightestBrush}">
     <Border Margin="16"
             Background="#FFFFFF"
-            BorderBrush="#E2E8F0"
+            BorderBrush="{StaticResource PinkLightBrush}"
             BorderThickness="1"
             CornerRadius="8"
             Padding="20">
