@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="TUHU - Template-based Web Scraper"
+        Title="TUHU V1 - Template-based Web Scraper"
         Icon="/icon.png"
         Height="820"
         Width="1280"
@@ -31,7 +31,7 @@
                             <GradientStop Color="{StaticResource PinkPrimaryColor}" Offset="1.0" />
                         </LinearGradientBrush>
                     </TextBlock.Foreground>
-                    TUHU
+                    TUHU V1
                 </TextBlock>
             </StackPanel>
         </DockPanel>
