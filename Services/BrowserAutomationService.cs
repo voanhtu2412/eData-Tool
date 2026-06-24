@@ -1272,6 +1272,106 @@ public class BrowserAutomationService : IAsyncDisposable
             return string.Empty;
         }
 
+        // --- Ưu tiên 1: Tự động trích xuất thông minh dựa vào nhãn (Label-based Smart Extraction) ---
+        try
+        {
+            var smartValue = await _page.EvaluateAsync<string>("""
+                (labelName) => {
+                    if (!labelName) return "";
+                    const cleanLabel = labelName.toLowerCase().replace(/[:：]/g, "").trim();
+                    if (!cleanLabel) return "";
+
+                    const synonyms = {
+                        "mã số thuế": ["mã số thuế", "mst", "mã số dn", "mã số doanh nghiệp", "mã doanh nghiệp", "mã số thuế doanh nghiệp"],
+                        "địa chỉ": ["địa chỉ", "địa chỉ trụ sở", "địa chỉ công ty", "địa chỉ trụ sở chính", "địa chỉ giao dịch"],
+                        "đại diện": ["đại diện", "người đại diện", "đại diện pháp luật", "người đại diện pháp luật", "chủ sở hữu", "chủ doanh nghiệp"],
+                        "điện thoại": ["điện thoại", "sđt", "số điện thoại", "phone", "tel"],
+                        "trạng thái": ["trạng thái", "tình trạng", "tình trạng hoạt động", "trạng thái hoạt động"],
+                        "ngày cấp": ["ngày cấp", "ngày thành lập", "ngày hoạt động", "ngày bắt đầu", "ngày hoạt động chính thức"],
+                        "tên công ty": ["tên công ty", "tên doanh nghiệp", "tên chính thức"]
+                    };
+
+                    const targetLabels = [cleanLabel];
+                    for (const [key, list] of Object.entries(synonyms)) {
+                        if (cleanLabel.includes(key) || list.includes(cleanLabel)) {
+                            list.forEach(item => {
+                                if (!targetLabels.includes(item)) targetLabels.push(item);
+                            });
+                        }
+                    }
+
+                    const allElements = document.querySelectorAll("td, th, span, label, p, div, li, h3, h4, b, strong");
+                    for (const el of allElements) {
+                        const text = (el.innerText || el.textContent || "").trim();
+                        if (!text || text.length > 100) continue;
+
+                        const cleanText = text.toLowerCase().replace(/[:：]/g, "").trim();
+                        const matches = targetLabels.some(target => 
+                            cleanText === target || 
+                            (cleanText.startsWith(target) && cleanText.length < target.length + 5)
+                        );
+
+                        if (matches) {
+                            // TH1: Dữ liệu nằm chung dòng có dấu hai chấm (vd: "Mã số thuế: 0123456789")
+                            if (text.includes(":") || text.includes("：")) {
+                                const parts = text.split(/[:：]/);
+                                if (parts.length > 1) {
+                                    const val = parts.slice(1).join(":").trim();
+                                    if (val) return val;
+                                }
+                            }
+
+                            // TH2: Cấu trúc bảng (td tiếp theo hoặc ô cạnh bên)
+                            if (el.tagName === "TD" || el.tagName === "TH") {
+                                const nextCell = el.nextElementSibling;
+                                if (nextCell) {
+                                    return (nextCell.innerText || nextCell.textContent || "").trim();
+                                }
+                                const row = el.closest("tr");
+                                if (row) {
+                                    const cells = Array.from(row.querySelectorAll("td, th"));
+                                    const idx = cells.indexOf(el);
+                                    if (idx !== -1 && idx + 1 < cells.length) {
+                                        return (cells[idx + 1].innerText || cells[idx + 1].textContent || "").trim();
+                                    }
+                                }
+                            }
+
+                            // TH3: Phần tử kế cận (vd: <span>Mã số thuế</span> <span>0123456789</span>)
+                            let sibling = el.nextElementSibling;
+                            while (sibling) {
+                                const val = (sibling.innerText || sibling.textContent || "").trim();
+                                if (val) return val;
+                                sibling = sibling.nextElementSibling;
+                            }
+
+                            // TH4: Phần tử kế cận của cấp cha (vd: div label song song div value)
+                            const parent = el.parentElement;
+                            if (parent && parent.tagName !== "BODY" && parent.tagName !== "HTML") {
+                                let parentNext = parent.nextElementSibling;
+                                while (parentNext) {
+                                    const val = (parentNext.innerText || parentNext.textContent || "").trim();
+                                    if (val) return val;
+                                    parentNext = parentNext.nextElementSibling;
+                                }
+                            }
+                        }
+                    }
+                    return "";
+                }
+                """, template.FieldName);
+
+            if (!string.IsNullOrWhiteSpace(smartValue))
+            {
+                return CleanText(smartValue);
+            }
+        }
+        catch
+        {
+            // Bỏ qua lỗi và tiếp tục thử fallback bằng selector tĩnh
+        }
+
+        // --- Ưu tiên 2 (Fallback): Sử dụng CssSelector hoặc XPath được chọn thủ công ---
         if (!string.IsNullOrWhiteSpace(template.CssSelector))
         {
             var value = await TryExtractByLocatorAsync(template.CssSelector, false);
