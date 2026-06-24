@@ -756,32 +756,24 @@ public class BrowserAutomationService : IAsyncDisposable
             return true;
         }
 
-        log?.Invoke("Phát hiện CAPTCHA/kiểm tra robot. Tool đang tạm dừng để bạn xử lý thủ công.");
+        log?.Invoke("Phát hiện kiểm tra robot/CAPTCHA. Đang chờ hệ thống tự động xử lý...");
 
-        // Fallback: hộp thoại thủ công
-        while (true)
+        // Chờ tự động giải quyết (không hiện hộp thoại)
+        int maxWaitSeconds = 60;
+        for (int i = 0; i < maxWaitSeconds; i++)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var choice = MessageBox.Show(
-                "Website đang yêu cầu CAPTCHA/kiểm tra robot.\n\nHãy giải CAPTCHA trong cửa sổ Playwright đang mở, sau đó bấm OK để tool kiểm tra lại và tiếp tục.\n\nBấm Cancel nếu muốn bỏ qua trang hiện tại.",
-                "Cần xác minh thủ công",
-                MessageBoxButton.OKCancel,
-                MessageBoxImage.Information);
-
-            if (choice != MessageBoxResult.OK)
-            {
-                log?.Invoke("Người dùng hủy xử lý CAPTCHA. Tool bỏ qua trang hiện tại.");
-                return false;
-            }
+            await Task.Delay(1000);
 
             if (!await LooksLikeRobotCheckAsync())
             {
-                log?.Invoke("Đã qua kiểm tra robot, tiếp tục crawl.");
+                log?.Invoke("Đã vượt qua kiểm tra robot, tiếp tục crawl.");
                 return true;
             }
-
-            log?.Invoke("Vẫn còn CAPTCHA. Hãy xử lý xong rồi bấm OK lại.");
         }
+
+        log?.Invoke("Quá thời gian chờ tự động giải quyết robot check (60s). Bỏ qua trang hiện tại.");
+        return false;
     }
 
     private async Task<bool> AdvanceListPageAsync(
