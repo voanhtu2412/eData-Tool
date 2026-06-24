@@ -753,29 +753,8 @@ public class BrowserAutomationService : IAsyncDisposable
 
     private async Task<bool> WaitForManualRobotCheckAsync(Action<string>? log, CancellationToken cancellationToken)
     {
-        if (!await LooksLikeRobotCheckAsync())
-        {
-            return true;
-        }
-
-        log?.Invoke("Phát hiện kiểm tra robot/CAPTCHA. Đang chờ hệ thống tự động xử lý...");
-
-        // Chờ tự động giải quyết (không hiện hộp thoại)
-        int maxWaitSeconds = 60;
-        for (int i = 0; i < maxWaitSeconds; i++)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            await Task.Delay(1000);
-
-            if (!await LooksLikeRobotCheckAsync())
-            {
-                log?.Invoke("Đã vượt qua kiểm tra robot, tiếp tục crawl.");
-                return true;
-            }
-        }
-
-        log?.Invoke("Quá thời gian chờ tự động giải quyết robot check (60s). Bỏ qua trang hiện tại.");
-        return false;
+        await Task.CompletedTask;
+        return true;
     }
 
     private async Task<bool> AdvanceListPageAsync(
@@ -845,12 +824,6 @@ public class BrowserAutomationService : IAsyncDisposable
 
     private async Task<bool> IsUsableNewListPageAsync(HashSet<string> visitedListPages, Action<string>? log)
     {
-        if (await LooksLikeRobotCheckAsync())
-        {
-            log?.Invoke("Trang danh sach tiep theo co dau hieu CAPTCHA/robot nen tool tam dung.");
-            return false;
-        }
-
         var fingerprint = await GetListPageFingerprintAsync();
         if (visitedListPages.Contains(fingerprint))
         {
