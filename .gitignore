@@ -1,0 +1,34 @@
+## Ignore Visual Studio temporary files, build results, and user-specific files
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# User-specific files (MonoDevelop/Xamarin Studio)
+*.userprefs
+
+# Mono auto generated files
+mono_crash.*
+
+# Nested PDBs
+*.pdb
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Re]leases/
+x64/
+x86/
+build/
+bld/
+[Bin]/
+[Obj]/
+bin/
+obj/
+
+# Visual Studio 2015/2017/2019/2022 cache directory
+.vs/

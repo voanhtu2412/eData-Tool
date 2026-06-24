@@ -1,0 +1,78 @@
+<Window x:Class="TaxCodeCollector.Views.TemplateWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Field Template"
+        Height="410"
+        Width="620"
+        WindowStartupLocation="CenterOwner"
+        Background="#F1F5F9">
+    <Border Margin="16"
+            Background="#FFFFFF"
+            BorderBrush="#E2E8F0"
+            BorderThickness="1"
+            CornerRadius="8"
+            Padding="20">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <StackPanel Grid.Row="0">
+                <TextBlock Text="Field Template"
+                           FontSize="20"
+                           FontWeight="SemiBold" />
+                <TextBlock Text="Chỉnh selector hoặc XPath cho trường dữ liệu đã chọn."
+                           Style="{StaticResource SubtitleText}"
+                           Margin="0,4,0,16" />
+            </StackPanel>
+
+            <!-- Fields Grid -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="110" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="FieldName" Style="{StaticResource SubtitleText}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,0,10" />
+                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Field.FieldName, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" />
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="CssSelector" Style="{StaticResource SubtitleText}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,0,10" />
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Field.CssSelector, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" />
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="XPath" Style="{StaticResource SubtitleText}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,0,10" />
+                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Field.XPath, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" />
+
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="SampleValue" Style="{StaticResource SubtitleText}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,0,10" />
+                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Field.SampleValue, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" />
+
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="OrderIndex" Style="{StaticResource SubtitleText}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,0,10" />
+                <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Field.OrderIndex, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" />
+            </Grid>
+
+            <!-- Action Buttons -->
+            <StackPanel Grid.Row="2"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Margin="0,12,0,0">
+                <Button Content="Cancel"
+                        Style="{StaticResource SecondaryButton}"
+                        Command="{Binding CancelCommand}"
+                        Margin="0,0,8,0" />
+                <Button Content="Save"
+                        Style="{StaticResource SuccessButton}"
+                        Command="{Binding SaveCommand}"
+                        Margin="0" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>
