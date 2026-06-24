@@ -232,7 +232,7 @@
                                 <TextBlock Text="Số cty / trang" Style="{StaticResource SubtitleText}" FontWeight="SemiBold" Margin="0,0,0,4"/>
                                 <TextBox Text="{Binding MaxCompaniesPerPage, UpdateSourceTrigger=PropertyChanged}"
                                          Margin="0"
-                                         ToolTip="Nhập số lượng công ty hiển thị trên mỗi trang danh sách. Mặc định là 25." />
+                                         ToolTip="Nhập số lượng công ty hiển thị trên mỗi trang danh sách. Mặc định là 30." />
                             </StackPanel>
                         </Grid>
                     </Grid>

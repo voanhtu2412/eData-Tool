@@ -25,7 +25,7 @@ public class MainViewModel : ObservableObject, IAsyncDisposable
     private string _nextPageXPath = string.Empty;
     private string _nextPageUrl = string.Empty;
     private int _maxPagesToCrawl = 1;
-    private int _maxCompaniesPerPage = 25;
+    private int _maxCompaniesPerPage = 30;
     private string _statusMessage = "Sẵn sàng.";
     private bool _isCrawling;
 

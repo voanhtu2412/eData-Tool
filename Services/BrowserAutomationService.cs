@@ -381,7 +381,7 @@ public class BrowserAutomationService : IAsyncDisposable
         string? nextPageXPath,
         Action<string>? log = null,
         Func<CompanyResultRow, Task>? rowReady = null,
-        int maxCompaniesPerPage = 25,
+        int maxCompaniesPerPage = 30,
         CancellationToken cancellationToken = default)
     {
         await StartBrowserAsync(log);
@@ -497,7 +497,7 @@ public class BrowserAutomationService : IAsyncDisposable
         string? nextPageXPath,
         Action<string>? log = null,
         Func<CompanyResultRow, Task>? rowReady = null,
-        int maxCompaniesPerPage = 25,
+        int maxCompaniesPerPage = 30,
         CancellationToken cancellationToken = default)
     {
         await StartBrowserAsync(log);
@@ -1171,7 +1171,7 @@ public class BrowserAutomationService : IAsyncDisposable
         return true;
     }
 
-    public async Task<List<CompanyLink>> ExtractCompanyLinksAsync(int maxCompaniesPerPage = 25)
+    public async Task<List<CompanyLink>> ExtractCompanyLinksAsync(int maxCompaniesPerPage = 30)
     {
         if (_page is null)
         {
