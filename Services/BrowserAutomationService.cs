@@ -382,6 +382,7 @@ public class BrowserAutomationService : IAsyncDisposable
         string? nextPageXPath,
         Action<string>? log = null,
         Func<CompanyResultRow, Task>? rowReady = null,
+        int maxCompaniesPerPage = 25,
         CancellationToken cancellationToken = default)
     {
         await StartBrowserAsync(log);
@@ -408,7 +409,7 @@ public class BrowserAutomationService : IAsyncDisposable
                 break;
             }
 
-            var links = await ExtractCompanyLinksAsync();
+            var links = await ExtractCompanyLinksAsync(maxCompaniesPerPage);
 
             var nextListUrl = await ExtractNextListPageUrlAsync(visitedListPages, nextPageCssSelector, nextPageXPath);
             log?.Invoke($"Trang danh sach {pageIndex}/{normalizedMaxListPages}: tim thay {links.Count} link cong ty.");
@@ -497,6 +498,7 @@ public class BrowserAutomationService : IAsyncDisposable
         string? nextPageXPath,
         Action<string>? log = null,
         Func<CompanyResultRow, Task>? rowReady = null,
+        int maxCompaniesPerPage = 25,
         CancellationToken cancellationToken = default)
     {
         await StartBrowserAsync(log);
@@ -529,7 +531,7 @@ public class BrowserAutomationService : IAsyncDisposable
                     break;
                 }
 
-                var links = await ExtractCompanyLinksAsync();
+                var links = await ExtractCompanyLinksAsync(maxCompaniesPerPage);
                 log?.Invoke($"Trang danh sach {pageIndex}/{normalizedMaxListPages}: tim thay {links.Count} link cong ty.");
 
                 for (var i = 0; i < links.Count; i++)
@@ -1197,7 +1199,7 @@ public class BrowserAutomationService : IAsyncDisposable
         return true;
     }
 
-    public async Task<List<CompanyLink>> ExtractCompanyLinksAsync()
+    public async Task<List<CompanyLink>> ExtractCompanyLinksAsync(int maxCompaniesPerPage = 25)
     {
         if (_page is null)
         {
@@ -1253,7 +1255,7 @@ public class BrowserAutomationService : IAsyncDisposable
                         && x.Text.Trim().Length > 3)
             .Where(LooksLikeCompanyResultLink)
             .Where(x => seen.Add(x.Url))
-            .Take(25)
+            .Take(maxCompaniesPerPage)
             .ToList();
     }
 

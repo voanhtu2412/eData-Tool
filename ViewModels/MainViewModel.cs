@@ -25,6 +25,7 @@ public class MainViewModel : ObservableObject, IAsyncDisposable
     private string _nextPageXPath = string.Empty;
     private string _nextPageUrl = string.Empty;
     private int _maxPagesToCrawl = 1;
+    private int _maxCompaniesPerPage = 25;
     private string _statusMessage = "Sẵn sàng.";
     private bool _isCrawling;
 
@@ -94,6 +95,16 @@ public class MainViewModel : ObservableObject, IAsyncDisposable
         {
             var normalized = Math.Clamp(value, 1, 500);
             SetProperty(ref _maxPagesToCrawl, normalized);
+        }
+    }
+
+    public int MaxCompaniesPerPage
+    {
+        get => _maxCompaniesPerPage;
+        set
+        {
+            var normalized = Math.Clamp(value, 1, 500);
+            SetProperty(ref _maxCompaniesPerPage, normalized);
         }
     }
 
@@ -323,6 +334,7 @@ public class MainViewModel : ObservableObject, IAsyncDisposable
                 NextPageXPath,
                 AddLog,
                 AddResultAsync,
+                MaxCompaniesPerPage,
                 _crawlCancellation.Token);
 
             session.Status = "Completed";
